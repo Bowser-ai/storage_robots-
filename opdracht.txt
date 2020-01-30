@@ -1,0 +1,49 @@
+Opdracht:
+
+1. Grid -> beginnen met Cartesian netwerk waarbij robots in vier richtingen kunnen voortbewegen. Grid bestaat uit rijen en kolommen van punten.
+2. Planner -> accepteert een lijst met opdrachten en verdeelt de opdrachten naar de robots. De planner geeft elke robot per keer één opdracht.
+3. Opdracht -> gesorteerde lijst van coördinaten waarbij de robot de lijst in de aangeboden volgorde afwerkt of bezoekt.
+4. robot -> krijgt een opdracht, bestaande uit een lijst met punten in de grid. De robots zijn coöperatief, het algemeen belang is belangrijker dan individueel belang. De robot plant een route langs de punten uit de opdracht en loopt deze route. Een robot stapt van punt naar punt. Een robot communiceert voor iedere stap met de andere robots wat het volgende punt is waar hij naar toe wil. Indien meer dan één robot naar hetzelfde punt willen, start onderhandeling over wie eerst gaat. Onderhandeling gebeurt op basis van prioriteit. Prioriteit is een functie van eerder gekregen voorrang. Degene met de laagste prioriteitwaarde gaat eerst.
+Indien het punt waar de robot naar toe wil bezet is. Start de robot communicatie met de robot op het bezette punt en communiceert zijn doel. Indien conflict, iedere robot houdt het punt bezet waar de ander naar toe wil, starten de robots onderhandeling over wie aan de kant gaat. Dit gebeurt op basis van dezelfde prioriteit als bij de voorrang. Aan de kant gaan betekent een stap naar rechts indien mogelijk, anders een stap naar links indien mogelijk, anders een stap achteruit indien mogelijk, anders wachten. Vervolgens berekent de robot die aan de kant is gestapt een nieuwe route.
+
+Taken van robot:
+1. Ontvangen van een opdracht.
+2. Berekenen van route via de punten in de opdracht.
+3. Onthouden welke punten zijn bezocht of welke punten niet zijn bezocht.
+4. Bijhouden hoe vaak zij voorrang hebben gehad (prioriteit).
+5. Uitzenden op tijdstip t naar welk punt de robot wil lopen op tijdstip t+1.
+6. Registeren of het punt waar de robot tijdstip t+1 naar toe wil lopen op dat moment ook vrij is.
+7. In geval van conflict moet de robot kunnen onderhandelen met alle robots die op tijdstip t+1 op het betreffende punt wil zijn.
+8. Aan de planner doorgeven dat hij de opdracht klaar heeft.
+
+Taken van planner:
+1. Ontvangen en bewaren lijst met opdrachten
+2. Indien een robot aangeeft klaar te zijn met een opdracht, deze een nieuwe opdracht geven.
+
+Wat heeft de robot nodig bij zijn taken:
+1. Contact met de planner
+2. Mogelijke next node
+3. Een lijst die de robot kan bewerken (poppen)
+4. Een voorrang counter
+5. De berekende route en een platform waar het doel van de robot op tijdstip t+1 gepost kan worden
+6. platform geeft vervolgens conflict terug -> contact met platform
+7. Mediator/platform waar de onderhandeling plaats vind
+8. contact met de planner.
+
+Classes:
+Robot
+Grid (data object)
+Planner
+Assignment (data object)
+CommunicationPlatform
+Mediator
+Point (data object)
+Presentation
+
+Type conflicten:
+twee of meerdere robots willen naar een punt dat niet bezet is op t+1;
+Éém of meerdere robots willen naar een punt dat bezet op t+1, omdat daar een robot staat op t met wachtinstructie
+Een robot wil naar een punt dat bezet is door een robot die naar het punt van de eerste robot wil.
+
+Het CommunicationPlatform identificeert alle conflicten en genereert een mediator voor deze conflicten en geeft deze terug aan de betrokken robots. In het geval van een complex (of samengesteld) conflict creëert het CommunicationPlatform een Mediator voor één subconflict en laat de robots dit oplossen. De oplossing wordt als een nieuwe actie op het CommunicationPlatform gepost. Het CommunicationPlatform geeft pas akkoord aan alle robots op het moment dat er geen conflicten meer zijn.
+
